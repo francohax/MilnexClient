@@ -63,24 +63,25 @@ module.exports = function (passport) {
                         return res.status(200).json({ message: 'You successfully registered! Please follow the instructions in the validation email sent to the address you provided to activate your account.' });
                     }
 
-                    // var host = req.get('host');
-                    //
                     // var link = "https://" + 'account.gametester.co' + "/account/verify?c=" + newUser.emailVerificationCode + "&u=" + newUser._id;
-                    //
-                    // var message = new Message('kUWbTsNdRPoZWS9Xa-uPBw', 'GameTesterVerification');
-                    // message.to(newUser.email);
-                    // message.mergeVars(newUser.email, { gamerNick: newUser.gamerNick });
-                    // message.mergeVars(newUser.email, { link: link });
-                    //
-                    // message.subject('Confirm your GameTester email address');
-                    // message.from('GameTester <noreply@gametester.co>');
-                    // message.send(function (err, response) {
-                    //     if (err) {
-                    //         return res.status(500).json({ message: { header: "Error", body: 'Verification Email could not be sent.' } });
-                    //     } else {
-                    //         return res.status(200).json({ message: { header: "Success", body: 'You successfully registered and an email has been sent to your email address with further instructions.' } });
-                    //     }
-                    // });
+                    var link = "http://" + 'localhost:8080' + "/account/verify?c=" + newUser.emailVerificationCode + "&u=" + newUser._id;
+                    
+                    
+                    var message = new Message(settings.mailchimpKey, 'MilnexRegistration');
+                    message.to(newUser.email);
+                    message.mergeVars(newUser.email, { firstname: newUser.firstName });
+                    message.mergeVars(newUser.email, { link: link });
+                    
+                    message.subject('Confirm your Milnex email address');
+                    message.from('Milnex <noreply@milnex.com>');
+                    message.send(function (err, response) {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).json({ message: { header: "Error", body: 'Verification Email could not be sent.' } });
+                        } else {
+                            return res.status(200).json({ message: { header: "Success", body: 'You successfully registered and an email has been sent to your email address with further instructions.' } });
+                        }
+                    });
                 });
             }
         });
